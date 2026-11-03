@@ -1,0 +1,26 @@
+{
+  "name": "mcp-forge",
+  "version": "0.1.0",
+  "description": "Deterministic OpenAPI 3 to TypeScript MCP server generator",
+  "type": "module",
+  "bin": {
+    "mcp-forge": "dist/cli.js"
+  },
+  "files": ["dist", "README.md", "docs"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

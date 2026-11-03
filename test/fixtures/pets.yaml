@@ -1,0 +1,71 @@
+openapi: 3.0.3
+info:
+  title: Pet API
+  version: 1.0.0
+servers:
+  - url: https://api.example.test/v1
+security:
+  - bearerAuth: []
+paths:
+  /pets/{petId}:
+    get:
+      operationId: getPet
+      summary: Get a pet
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: includeOwner
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+  /pets:
+    post:
+      operationId: createPet
+      summary: Create a pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPet'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    NewPet:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        age:
+          type: integer
+          minimum: 0
+    Pet:
+      allOf:
+        - $ref: '#/components/schemas/NewPet'
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: string
