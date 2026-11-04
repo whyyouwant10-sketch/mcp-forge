@@ -348,10 +348,16 @@ headers so request construction is testable independently of network I/O.
 ### URL and request limits
 
 - Only `http` and `https` server URLs are allowed.
-- `file:`, `data:`, `javascript:`, localhost aliases, link-local addresses,
-  and private IP ranges are rejected by default in the real transport to
-  prevent SSRF. An explicit runtime opt-in may allow local development URLs;
-  generation itself never makes a request.
+- `file:`, `data:`, and `javascript:` URLs are rejected. Before the real
+  transport connects, IPv4 and IPv6 literals are parsed and every hostname is
+  resolved with all results. Any loopback, private (RFC 1918 or IPv6 unique
+  local), link-local, unspecified, or multicast result is rejected by default,
+  as are the `localhost` aliases. The connection is pinned to the validated
+  address to avoid a second DNS lookup and DNS rebinding between validation and
+  connection; changes to OS routing or network interfaces are outside this
+  process boundary. An explicit runtime opt-in may allow local development
+  URLs; generation itself never makes a request. DNS lookup failures and
+  invalid lookup results fail the request.
 - Redirects are disabled by default; a future option may permit at most three
   redirects while re-validating each destination.
 - Request body: 1 MiB maximum.
